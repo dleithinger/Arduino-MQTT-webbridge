@@ -5,14 +5,12 @@ Servo myservo;  // create servo object to control a servo
 const int messageLength = 13; // this is not used at the moment - would be the message length for parsing JSON Data, used in recvJSON()
 const int inputPin = A0;
 
-//char json[] = "{\"angle\":255}";
 char jsonMessage[messageLength];
 boolean newData = false;
 unsigned char receivedChar;
 
 void setup() {
   pinMode(inputPin, INPUT); // set pin to input
-  //pinMode(inputPin, INPUT_PULLUP); // set pin to input and turn on pullup resistors
   myservo.attach(6);  // attaches the servo on pin 9 to the servo object
   Serial.begin(9600); // initialize serial communications
 }
@@ -54,7 +52,7 @@ void recvOneChar() {
 
 
 
-// Parsing JSON - still have to debug this one
+// Parsing received JSON
 void recvJSON() {
 
   static byte ndx = 0;
@@ -92,11 +90,9 @@ void recvJSON() {
       //Serial.println(error.f_str());
       return;
     }
-    // Fetch values.
-    //
-    // Most of the time, you can rely on the implicit casts.
-    // In other case, you can do doc["time"].as<long>();
+
     int receivedAngle = doc["angle"];
     myservo.write(receivedAngle);                  // sets the servo position according to the scaled value
+    
     newData = false;
 }
