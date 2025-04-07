@@ -9,6 +9,7 @@ const int servoPin = 9;
 char jsonMessage[messageLength];
 boolean newData = false;
 unsigned char receivedChar;
+int lastPotAngle180 = 0;
 
 void setup() {
   pinMode(potentiometerPin, INPUT); // set pin to input
@@ -19,21 +20,24 @@ void setup() {
 void loop() {
 
   // read the input pin:
-  int potentiometer = analogRead(potentiometerPin);                  
+  int potentiometerPosition = analogRead(potentiometerPin);                  
   // remap the pot value to fit in 1 byte:
-  int mappedPot = map(potentiometer, 0, 1023, 0, 180);   // Print values.
+  int potAngle180 = map(potentiometerPosition, 0, 1023, 0, 180);   // Print values.
 
-  // send values out serial port as a JSON string,
-  // the resulting JSON lookins like this: {"angle":mappedPot}
-  Serial.print("{\"angle\":");
-  Serial.print(mappedPot);
-  Serial.println("}");
+  if (potAngle180 != lastPotAngle180) {
+    // send values out serial port as a JSON string,
+    // the resulting JSON lookins like this: {"angle":mappedPot}
+    Serial.print("{\"angle\":");
+    Serial.print(potAngle180);
+    Serial.println("}");
+    lastPotAngle180 = potAngle180;
+  }
 
   recvOneChar();
   updateServo();
                            
   // slight delay to stabilize the ADC:
-  delay(1);                                            
+  delay(10);                                            
 }
 
 void updateServo() {
