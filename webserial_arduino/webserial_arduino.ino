@@ -3,22 +3,23 @@
 Servo myservo;  // create servo object to control a servo
 
 const int messageLength = 13; // this is not used at the moment - would be the message length for parsing JSON Data, used in recvJSON()
-const int inputPin = A0;
+const int potentiometerPin = A0;
+const int servoPin = 9;
 
 char jsonMessage[messageLength];
 boolean newData = false;
 unsigned char receivedChar;
 
 void setup() {
-  pinMode(inputPin, INPUT); // set pin to input
-  myservo.attach(6);  // attaches the servo on pin 9 to the servo object
+  pinMode(potentiometerPin, INPUT); // set pin to input
+  myservo.attach(servoPin);  // attaches the servo on pin 9 to the servo object
   Serial.begin(9600); // initialize serial communications
 }
  
 void loop() {
 
   // read the input pin:
-  int potentiometer = analogRead(inputPin);                  
+  int potentiometer = analogRead(potentiometerPin);                  
   // remap the pot value to fit in 1 byte:
   int mappedPot = map(potentiometer, 0, 1023, 0, 180);   // Print values.
 
@@ -49,8 +50,6 @@ void recvOneChar() {
         newData = true;
     }
 }
-
-
 
 // Parsing received JSON
 void recvJSON() {
